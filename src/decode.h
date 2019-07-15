@@ -52,6 +52,10 @@ int obj_handle_stream (Bit_Chain *restrict dat, Dwg_Object *restrict obj,
                        Bit_Chain *restrict hdl_dat);
 void bfr_read (void *restrict dst, BITCODE_RC *restrict *restrict src,
                size_t size);
+void bfr_read_32 (void *restrict dst, BITCODE_RC *restrict *restrict src,
+                  size_t size);
+void bfr_read_64 (void *restrict dst, BITCODE_RC *restrict *restrict src,
+                  size_t size);
 
 /* reused with free */
 void dwg_free_xdata_resbuf (Dwg_Resbuf *restrict rbuf);
