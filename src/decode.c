@@ -4204,6 +4204,11 @@ dwg_decode_entity (Bit_Chain *dat, Bit_Chain *hdl_dat, Bit_Chain *str_dat,
   LOG_INSANE (" @%lu.%u", dat->byte, dat->bit)
   LOG_TRACE ("\n")
   PRE (R_13) { return DWG_ERR_NOTYETSUPPORTED; }
+  if (!obj->bitsize)
+    {
+      LOG_ERROR ("Invalid entity bitsize 0");
+      return error | DWG_ERR_INTERNALERROR;
+    }
 
   if (has_wrong_bitsize)
     LOG_WARN ("Skip eed")

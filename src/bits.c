@@ -116,21 +116,23 @@ bit_reset_chain (Bit_Chain *dat)
 }
 
 #ifdef DWG_ABORT
-#  define CHK_OVERFLOW(func,retval)                                           \
+#  define CHK_OVERFLOW(func, retval)                                          \
     if (dat->byte >= dat->size)                                               \
       {                                                                       \
         loglevel = dat->opts & DWG_OPTS_LOGLEVEL;                             \
-        LOG_ERROR ("%s buffer overflow at %lu", func, dat->byte)              \
+        LOG_ERROR ("%s buffer overflow at %lu, size %lu", func, dat->byte,    \
+                   dat->size)                                                 \
         if (++errors > DWG_ABORT_LIMIT)                                       \
           abort ();                                                           \
         return retval;                                                        \
       }
 #else
-#  define CHK_OVERFLOW(func,retval)                                           \
+#  define CHK_OVERFLOW(func, retval)                                          \
     if (dat->byte >= dat->size)                                               \
       {                                                                       \
         loglevel = dat->opts & DWG_OPTS_LOGLEVEL;                             \
-        LOG_ERROR ("%s buffer overflow at %lu", func, dat->byte)              \
+        LOG_ERROR ("%s buffer overflow at %lu, size %lu", func, dat->byte,    \
+                   dat->size)                                                 \
         return retval;                                                        \
       }
 #endif
@@ -1175,6 +1177,14 @@ int
 bit_read_H (Bit_Chain *restrict dat, Dwg_Handle *restrict handle)
 {
   unsigned long pos = dat->byte;
+  int i;
+
+  if (dat->byte >= dat->size)
+    {
+      loglevel = dat->opts & DWG_OPTS_LOGLEVEL;
+      LOG_ERROR ("buffer overflow at pos %lu, size %lu", dat->byte, dat->size)
+      return DWG_ERR_INVALIDHANDLE;
+    }
   handle->code = bit_read_RC (dat);
   if (pos == dat->byte)
     return DWG_ERR_INVALIDHANDLE;
