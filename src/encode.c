@@ -977,7 +977,7 @@ dwg_encode (Dwg_Data *restrict dwg, Bit_Chain *restrict dat)
   dat->byte += 6;
 
   {
-    struct Dwg_Header *_obj = &dwg->header;
+    Dwg_Header *_obj = &dwg->header;
     Dwg_Object *obj = NULL;
     if (!_obj->dwg_version)
       {
@@ -1081,14 +1081,14 @@ dwg_encode (Dwg_Data *restrict dwg, Bit_Chain *restrict dat)
             // hack to trigger IF_ENCODE_FROM_EARLIER defaults. undone after HEADER
             dat->from_version = R_11;
             if (dat->version <= dat->from_version)
-              dat->from_version = dat->version - 1;
+              dat->from_version = (Dwg_Version_Type)((int)dat->version - 1);
           }
       }
     LOG_TRACE ("num_sections: " FORMAT_RL " [RL]\n", dwg->header.num_sections);
     bit_write_RL (dat, dwg->header.num_sections);
     if (!dwg->header.section)
-      dwg->header.section
-          = calloc (dwg->header.num_sections, sizeof (Dwg_Section));
+      dwg->header.section = (Dwg_Section*)calloc (dwg->header.num_sections,
+                                                  sizeof (Dwg_Section));
     section_address = dat->byte;                 // save section address
     dat->byte += (dwg->header.num_sections * 9); /* RC + 2*RL */
     bit_write_CRC (dat, 0, 0xC0C1);
@@ -1100,7 +1100,7 @@ dwg_encode (Dwg_Data *restrict dwg, Bit_Chain *restrict dat)
      */
     if (dwg->header.num_sections > 5)
       {
-        struct Dwg_AuxHeader *_obj = &dwg->auxheader;
+        Dwg_AuxHeader *_obj = &dwg->auxheader;
         Dwg_Object *obj = NULL;
         BITCODE_BL vcount;
         assert (!dat->bit);
@@ -1168,8 +1168,8 @@ dwg_encode (Dwg_Data *restrict dwg, Bit_Chain *restrict dat)
     Dwg_Section *section;
 
     Dwg_Object *obj = NULL;
-    struct Dwg_R2004_Header *_obj = &dwg->r2004_header;
-    const int size = sizeof (struct Dwg_R2004_Header);
+    Dwg_R2004_Header *_obj = &dwg->r2004_header;
+    const int size = sizeof (Dwg_R2004_Header);
     char encrypted_data[size];
     unsigned int rseed = 1;
     uint32_t checksum;
@@ -1177,8 +1177,8 @@ dwg_encode (Dwg_Data *restrict dwg, Bit_Chain *restrict dat)
     LOG_ERROR (WE_CAN "We don't encode the R2004_section_map yet")
 
     if (dwg->header.section_infohdr.num_desc && !dwg->header.section_info)
-      dwg->header.section_info = calloc (dwg->header.section_infohdr.num_desc,
-                                         sizeof (Dwg_Section_Info));
+      dwg->header.section_info = (Dwg_Section_Info *)calloc (
+          dwg->header.section_infohdr.num_desc, sizeof (Dwg_Section_Info));
 
     dat->byte = 0x80;
     for (i = 0; i < (BITCODE_BL)size; i++)
@@ -3040,14 +3040,14 @@ dwg_encode_header_variables (Bit_Chain *dat, Bit_Chain *hdl_dat,
 {
   Dwg_Header_Variables *_obj = &dwg->header_vars;
   Dwg_Object *obj = NULL;
-  int old_from = (int)dat->from_version;
+  Dwg_Version_Type old_from = dat->from_version;
 
   if (!_obj->HANDSEED) // minimal or broken DXF
     {
       dwg->opts |= DWG_OPTS_MINIMAL;
-      dat->from_version = dat->version - 1;
+      dat->from_version = (Dwg_Version_Type)((int)dat->version - 1);
       LOG_TRACE ("encode from minimal DXF\n");
-      _obj->HANDSEED = calloc (1, sizeof (Dwg_Object_Ref));
+      _obj->HANDSEED = (Dwg_Object_Ref*)calloc (1, sizeof (Dwg_Object_Ref));
       _obj->HANDSEED->absolute_ref = 0x72E;
     }
 
@@ -3249,7 +3249,7 @@ dwg_encode_xdata (Bit_Chain *restrict dat, Dwg_Object_XRECORD *restrict _obj,
 char *
 encrypt_sat1 (BITCODE_BL blocksize, BITCODE_RC *acis_data, int *idx)
 {
-  char *encr_sat_data = calloc (blocksize, 1);
+  char *encr_sat_data = (char*)calloc (blocksize, 1);
   int i = *idx;
   int j;
   for (j = 0; j < (int)blocksize; j++)

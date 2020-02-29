@@ -354,7 +354,7 @@ dwg_version_type (const Dwg_Version_Type version)
 char *
 strrplc (const char *s, const char *from, const char *to)
 {
-  char *p = strstr (s, from);
+  const char *p = strstr (s, from);
   if (p)
     {
       int len = strlen (s) - (strlen (from) - strlen (to));

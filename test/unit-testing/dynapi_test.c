@@ -45419,6 +45419,14 @@ test_sizes (void)
                "dwg_dynapi_fields_size (\"ACTIONBODY\"): %d\n", size1, size2);
       error++;
     }
+  size1 = sizeof (struct _dwg_AcDs);
+  size2 = dwg_dynapi_fields_size ("AcDs");
+  if (size1 != size2)
+    {
+      fprintf (stderr, "sizeof(struct _dwg_AcDs): %d != "
+               "dwg_dynapi_fields_size (\"AcDs\"): %d\n", size1, size2);
+      error++;
+    }
   size1 = sizeof (struct _dwg_AcDs_Data);
   size2 = dwg_dynapi_fields_size ("AcDs_Data");
   if (size1 != size2)
@@ -45841,6 +45849,22 @@ test_sizes (void)
     {
       fprintf (stderr, "sizeof(struct _dwg_MLEADER_AnnotContext): %d != "
                "dwg_dynapi_fields_size (\"MLEADER_AnnotContext\"): %d\n", size1, size2);
+      error++;
+    }
+  size1 = sizeof (struct _dwg_MLEADER_Content_Block);
+  size2 = dwg_dynapi_fields_size ("MLEADER_Content_Block");
+  if (size1 != size2)
+    {
+      fprintf (stderr, "sizeof(struct _dwg_MLEADER_Content_Block): %d != "
+               "dwg_dynapi_fields_size (\"MLEADER_Content_Block\"): %d\n", size1, size2);
+      error++;
+    }
+  size1 = sizeof (struct _dwg_MLEADER_Content_MText);
+  size2 = dwg_dynapi_fields_size ("MLEADER_Content_MText");
+  if (size1 != size2)
+    {
+      fprintf (stderr, "sizeof(struct _dwg_MLEADER_Content_MText): %d != "
+               "dwg_dynapi_fields_size (\"MLEADER_Content_MText\"): %d\n", size1, size2);
       error++;
     }
   size1 = sizeof (struct _dwg_MLINESTYLE_line);
