@@ -14,7 +14,7 @@ api_process (dwg_object *obj)
   BITCODE_B xrefdep;
   BITCODE_B flag1;
   BITCODE_H extref;
-  BITCODE_H viewport;
+  BITCODE_H *viewports;
 
   //Dwg_Version_Type dwg_version = obj->parent->header.version;
   dwg_obj_vport_entity_header *_obj = dwg_object_to_VPORT_ENTITY_HEADER (obj);
@@ -28,5 +28,14 @@ api_process (dwg_object *obj)
 
   CHK_ENTITY_TYPE (_obj, VPORT_ENTITY_HEADER, flag1, B, flag1);
   CHK_ENTITY_H (_obj, VPORT_ENTITY_HEADER, extref, extref);
-  CHK_ENTITY_H (_obj, VPORT_ENTITY_HEADER, viewport, viewport);
+  //CHK_ENTITY_HV (_obj, VPORT_ENTITY_HEADER, viewports, viewports);
+  i = 0;
+  do
+    {
+      ok ("viewports[%d]: " FORMAT_REF, ARGS_REF (_obj->viewports[i]));
+      i++;
+    }
+  while (_obj->viewports[i]
+         && !(_obj->viewports[i].handleref.code == 5
+              && _obj->viewports[i].handleref.size == 0));
 }
